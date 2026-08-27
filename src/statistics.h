@@ -23,7 +23,7 @@ struct Buffer
 struct Statistics
 {
     size_t counts[BYTE_RANGE];
-    size_t total_counts;
+    uint64_t total_counts;
 };
 
 //statistics type
