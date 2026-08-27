@@ -17,8 +17,9 @@ int main()
     struct Statistics statistics;
     byte_statistics(file_ptr, &statistics);
 
+    struct HuffmanTree huffmantree[BYTE_RANGE];
     struct HuffmanCode huffmancode[BYTE_RANGE];
-    huffman_encode(&statistics, huffmancode);
+    struct HuffmanTree *root = huffman_encode(&statistics, huffmantree, huffmancode);
 
     struct BitWrite bitwrite =
     {
@@ -33,8 +34,10 @@ int main()
         return 1;
     }
     
+    head_output(root, huffmantree, &bitwrite, statistics.total_counts);
+
     rewind(file_ptr);
-    code_output(huffmancode, file_ptr, &bitwrite);
+    code_output(huffmancode, &bitwrite, file_ptr);
 
     return 0;
 }

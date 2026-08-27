@@ -5,11 +5,10 @@
 
 #include "statistics.h"
 
-void huffman_encode(struct Statistics *statistics, struct HuffmanCode *huffmancode)
+struct HuffmanTree *huffman_encode(struct Statistics *statistics, struct HuffmanTree *huffmantree, struct HuffmanCode *huffmancode)
 {
     //initial tree struct
     size_t node_count = 0;
-    struct HuffmanTree huffmantree[BYTE_RANGE];
     for (size_t i = 0; i < BYTE_RANGE; i++)
     {
         if (statistics->counts[i] != 0)
@@ -80,6 +79,8 @@ void huffman_encode(struct Statistics *statistics, struct HuffmanCode *huffmanco
 
     //traversal huffman tree
     traversal_tree(root, 0, 0, huffmancode);
+
+    return root;
 }
 
 void traversal_tree(struct HuffmanTree *node, uint32_t current_code_val, uint8_t current_depth, 
