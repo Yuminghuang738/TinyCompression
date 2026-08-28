@@ -23,7 +23,4 @@ struct HuffmanCode
 
 struct HuffmanTree *huffman_encode(struct Statistics *statistics, struct HuffmanTree *huffmantree, struct HuffmanCode *huffmancode);
 
-void traversal_tree(struct HuffmanTree *node, uint32_t current_code_val, uint8_t current_depth, 
-                    struct HuffmanCode *huffmancode);
-
 #endif
