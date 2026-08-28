@@ -34,7 +34,7 @@ int main()
         return 1;
     }
     
-    head_output(root, huffmantree, &bitwrite, statistics.total_counts);
+    head_output(root, &bitwrite, statistics.total_counts);
 
     rewind(file_ptr);
     code_output(huffmancode, &bitwrite, file_ptr);

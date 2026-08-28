@@ -3,12 +3,48 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
 #include "statistics.h"
 #include "bit_io.h"
 
-void code_output(struct HuffmanCode *huffmancode, FILE *read_fp, struct BitWrite *bitwrite)
+void head_output(struct HuffmanTree *root, struct BitWrite *bitwrite, uint64_t total_counts)
 {
+    fwrite(&total_counts, sizeof(total_counts), WRITE_NUM, bitwrite->write_fp);
+    
+    bitwrite->bit_used = 0;
+    bitwrite->write_buffer = 0;
+    
+    //node->left: merge_node, write 0, node->right: leaf_node, write 1 and byte_value, root node write nothing
+    serialize_tree(root, bitwrite);
+
+    bit_flush(bitwrite);
+}
+
+static void serialize_tree(struct HuffmanTree *node, struct BitWrite *bitwrite)
+{
+    //leaf node: node->left == NULL and node->right == NULL
+    if (node->left == NULL)
+    {
+        bit_write(bitwrite, LEAF_NODE);
+        for (size_t bit_pos = 0; bit_pos < BYTE_LENGTH; bit_pos++)
+        {
+            bit_write(bitwrite, (node->byte_value >> BYTE_LENGTH - 1 - bit_pos) & 1U);
+        }
+    }
+    else
+    {
+        bit_write(bitwrite, MERGE_NODE);
+        serialize_tree(node->left, bitwrite);
+        serialize_tree(node->right, bitwrite);
+    }
+}
+
+void code_output(struct HuffmanCode *huffmancode, struct BitWrite *bitwrite, FILE *read_fp)
+{
+    bitwrite->bit_used = 0;
+    bitwrite->write_buffer = 0;
+    
     struct Buffer *buffer = malloc(sizeof(struct Buffer));
     if (buffer == NULL)
     {
