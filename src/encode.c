@@ -5,6 +5,25 @@
 
 #include "statistics.h"
 
+static void traversal_tree(struct HuffmanTree *node, uint32_t current_code_val, uint8_t current_depth, 
+                    struct HuffmanCode *huffmancode)
+{
+    if (node == NULL)
+    {
+        return;
+    }
+    if (node->left == NULL && node->right == NULL)
+    {
+        huffmancode[node->byte_value].code_val = current_code_val;
+        huffmancode[node->byte_value].code_len = current_depth;
+        
+        return;
+    }
+
+    traversal_tree(node->left, current_code_val << 1, current_depth + 1, huffmancode);
+    traversal_tree(node->right, (current_code_val << 1) | 1U, current_depth + 1, huffmancode);
+}
+
 struct HuffmanTree *huffman_encode(struct Statistics *statistics, struct HuffmanTree *huffmantree, struct HuffmanCode *huffmancode)
 {
     //initial tree struct
@@ -81,23 +100,4 @@ struct HuffmanTree *huffman_encode(struct Statistics *statistics, struct Huffman
     traversal_tree(root, 0, 0, huffmancode);
 
     return root;
-}
-
-static void traversal_tree(struct HuffmanTree *node, uint32_t current_code_val, uint8_t current_depth, 
-                    struct HuffmanCode *huffmancode)
-{
-    if (node == NULL)
-    {
-        return;
-    }
-    if (node->left == NULL && node->right == NULL)
-    {
-        huffmancode[node->byte_value].code_val = current_code_val;
-        huffmancode[node->byte_value].code_len = current_depth;
-        
-        return;
-    }
-
-    traversal_tree(node->left, current_code_val << 1, current_depth + 1, huffmancode);
-    traversal_tree(node->right, (current_code_val << 1) | 1U, current_depth + 1, huffmancode);
 }
