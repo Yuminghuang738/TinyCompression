@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -g -Wall -o0
 
-SRCS = bit_io.c encode.c main.c output.c statistics.c
+SRCS = src/bit_io.c src/encode.c src/main.c src/output.c src/statistics.c src/input.c
 TARGET = tc
 
 $(TARGET): $(SRCS)
