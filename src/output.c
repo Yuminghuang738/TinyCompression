@@ -48,7 +48,7 @@ void code_output(struct HuffmanCode *huffmancode, struct BitWrite *bitwrite, FIL
     struct Buffer *buffer = malloc(sizeof(struct Buffer));
     if (buffer == NULL)
     {
-        perror("Error while allowcating buffer struct!\n");
+        perror("Error while allowcating buffer struct!");
         return;
     }
 
@@ -56,7 +56,7 @@ void code_output(struct HuffmanCode *huffmancode, struct BitWrite *bitwrite, FIL
     buffer->buffer_ptr = malloc(buffer->size);
     if (buffer->buffer_ptr == NULL)
     {
-        perror("Error while allowcating buffer memory!\n");
+        perror("Error while allowcating buffer memory!");
         free(buffer);
         return;
     }

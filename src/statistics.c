@@ -9,20 +9,20 @@ void byte_statistics(FILE *file_ptr, struct Statistics *statistics)
 {
     if (file_ptr == NULL)
     {
-        perror("Error while opening file!\n");
+        perror("Error while opening file!");
         return;
     }
     
     if (statistics == NULL)
     {
-        perror("Invalid argument!\n");
+        perror("Invalid argument!");
         return;
     }
 
     struct Buffer *buffer = malloc(sizeof(struct Buffer));
     if (buffer == NULL)
     {
-        perror("Error while allowcating buffer struct!\n");
+        perror("Error while allowcating buffer struct!");
         return;
     }
 
@@ -30,7 +30,7 @@ void byte_statistics(FILE *file_ptr, struct Statistics *statistics)
     buffer->buffer_ptr = malloc(buffer->size);
     if (buffer->buffer_ptr == NULL)
     {
-        perror("Error while allowcating buffer memory!\n");
+        perror("Error while allowcating buffer memory!");
         free(buffer);
         return;
     }
