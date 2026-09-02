@@ -8,6 +8,7 @@
 #include "bit_io.h"
 #include "output.h"
 #include "input.h"
+#include "decode.h"
 
 int main(int argc, char *argv[])
 {   
@@ -15,6 +16,7 @@ int main(int argc, char *argv[])
     if (argc != 3)
     {
         fprintf(stderr, "Usage: %s <mode_paremeter> <file_path>\n", argv[0]);
+        
         return 1;
     }
 
@@ -24,15 +26,16 @@ int main(int argc, char *argv[])
     //compression mode
     if (strcmp(parameter, "-c") == 0)
     {
-        FILE *file_ptr = fopen(file_path, "rb");
-        if (file_ptr == NULL)
+        FILE *read_fp = fopen(file_path, "rb");
+        if (read_fp == NULL)
         {
             perror("Error while opening file!");
+            
             return 1;
         }
 
         struct Statistics statistics;
-        byte_statistics(file_ptr, &statistics);
+        byte_statistics(read_fp, &statistics);
 
         struct HuffmanTree huffmantree[BYTE_RANGE];
         struct HuffmanCode huffmancode[BYTE_RANGE];
@@ -42,7 +45,8 @@ int main(int argc, char *argv[])
         char *new_path = malloc(len + 4);
         if (new_path == NULL)
         {
-            fclose(file_ptr);
+            fclose(read_fp);
+            
             return 1;
         }
         strcpy(new_path, file_path);
@@ -56,24 +60,42 @@ int main(int argc, char *argv[])
         };
         if (bitwrite.write_fp == NULL)
         {
-            fclose(file_ptr);
             perror("Error while opening file!");
+            
+            fclose(read_fp);
             return 1;
         }
 
         head_output(root, &bitwrite, statistics.total_counts);
+        rewind(read_fp);
+        code_output(huffmancode, &bitwrite, read_fp);
 
-        rewind(file_ptr);
-        code_output(huffmancode, &bitwrite, file_ptr);
-
-        fclose(file_ptr);
+        fclose(read_fp);
         fclose(bitwrite.write_fp);
         free(new_path);
     }
-
     //decompression mode
     else if (strcmp(parameter, "-d") == 0)
     {
+        uint64_t total_counts;
+        
+        size_t len = strlen(file_path);
+        char *new_path = malloc(len - 3 + 1);
+        if (new_path == NULL)
+        {
+            return 1;
+        }
+        strncpy(new_path, file_path, len - 3);
+        new_path[len - 3] = '\0';
+        
+        FILE *write_fp = fopen(new_path, "w+");
+        if (write_fp == NULL)
+        {
+            free(new_path);
+            
+            return 1;
+        }
+
         struct BitRead bitread = 
         {
             .read_fp = fopen(file_path, "rb"),
@@ -83,13 +105,19 @@ int main(int argc, char *argv[])
         if (bitread.read_fp == NULL)
         {
             perror("Error while opening file!");
+            
+            fclose(write_fp);
+            free(new_path);
             return 1;
         }
-        uint64_t total_counts;
 
         struct HuffmanTree *root = head_input(&bitread, &total_counts);
-    }
+        huffman_decode(root, &bitread, write_fp, total_counts);
 
+        fclose(write_fp);
+        fclose(bitread.read_fp);
+        free(new_path);
+    }
     else
     {
         fprintf(stderr, "Error: unknown parameter!\n");
