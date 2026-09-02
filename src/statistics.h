@@ -27,6 +27,6 @@ struct Statistics
 };
 
 //statistics type
-void byte_statistics(FILE *file_ptr, struct Statistics *Statistics);
+void byte_statistics(FILE *read_fp, struct Statistics *Statistics);
 
 #endif
