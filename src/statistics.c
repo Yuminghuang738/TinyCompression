@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-void byte_statistics(FILE *file_ptr, struct Statistics *statistics)
+void byte_statistics(FILE *read_fp, struct Statistics *statistics)
 {
-    if (file_ptr == NULL)
+    if (read_fp == NULL)
     {
         perror("Error while opening file!");
         return;
@@ -37,7 +37,7 @@ void byte_statistics(FILE *file_ptr, struct Statistics *statistics)
 
     size_t count;
     memset(statistics, 0, sizeof(*statistics));
-    while ((count = fread(buffer->buffer_ptr, READ_SIZE, READ_COUNT, file_ptr)) > 0)
+    while ((count = fread(buffer->buffer_ptr, READ_SIZE, READ_COUNT, read_fp)) > 0)
     {
         for (size_t statistics_count = 0; statistics_count < count; statistics_count++)
         {
