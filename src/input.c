@@ -52,5 +52,7 @@ struct HuffmanTree *head_input(struct BitRead *bitread, uint64_t *total_counts)
 
     struct HuffmanTree *root = deserialize_tree(bitread);
 
+    bitread->bit_left = 0;
+
     return root;
 }

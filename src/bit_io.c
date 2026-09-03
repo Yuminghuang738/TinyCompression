@@ -19,7 +19,7 @@ void bit_write(struct BitWrite *bitwrite, uint8_t encode_bit)
 
 void bit_flush(struct BitWrite *bitwrite)
 {
-    if (bitwrite->bit_used > BYTE_LENGTH)
+    if (bitwrite->bit_used > 0)
     {
         fwrite(&bitwrite->write_buffer, ELEMENT_SIZE, ELEMENT_NUM, bitwrite->write_fp);
         bitwrite->write_buffer = 0;
