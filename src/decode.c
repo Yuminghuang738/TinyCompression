@@ -5,7 +5,6 @@
 
 #include "encode.h"
 #include "bit_io.h"
-#include "output.h"
 
 void huffman_decode(struct HuffmanTree *root, struct BitRead *bitread, FILE *write_fp,
                     uint64_t total_counts)
@@ -17,7 +16,7 @@ void huffman_decode(struct HuffmanTree *root, struct BitRead *bitread, FILE *wri
     {
         uint8_t bit = bit_read(bitread);
 
-        if (bit == MERGE_NODE)
+        if (bit == 0)
         {
             current = current->left;
         }
