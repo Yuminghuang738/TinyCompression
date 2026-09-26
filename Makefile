@@ -1,11 +1,23 @@
-CC = gcc
-CFLAGS = -g -Wall -o0
+CC      := gcc
+CFLAGS  := -g -Wall -Iinclude -MMD -MP
 
-SRCS = src/bit_io.c src/encode.c src/main.c src/output.c src/statistics.c src/input.c src/decode.c
-TARGET = tc
+SRCS    := $(wildcard src/*.c)
+OBJS    := $(SRCS:src/%.c=build/%.o)
+DEPS    := $(OBJS:.o=.d)
+TARGET  := build/tc
 
-$(TARGET): $(SRCS)
-	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET)
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) $^ -o $@
+
+build/%.o: src/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+-include $(DEPS)
 
 clean:
-	rm -f $(TARGET)
+	rm -rf build
+
+.PHONY: all clean
