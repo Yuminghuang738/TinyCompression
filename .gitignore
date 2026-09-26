@@ -1,5 +1,2 @@
+build/
 .vscode/
-*.o
-*.a
-*.tc
-tc
